@@ -1,0 +1,41 @@
+model{
+
+	for(i in 1:NSUBJ){
+		#counts of yes given yes responses
+		#are binomially distributed
+		YY[i] ~ dbinom(theta.b.phi[i], Y_[i]) 
+		#counts of yes given no responses
+		#are binomially distributed
+		NY[i] ~ dbinom(theta.a.phi[i], N_[i]) 
+		#transform theta.a to rate scale
+		theta.b.phi[i] <- phi(theta.b[i])
+		#transform theta.b to rate scale		
+		theta.a.phi[i] <- phi(theta.a[i]) 
+		#reparameterization of rates
+		theta.a[i] <- bias[i] - (alpha[i]/2)
+		theta.b[i] <- bias[i] + (alpha[i]/2)
+		#sequential dependency parameter
+		alpha[i] ~ dnorm(mu.alpha, sigma.alpha)
+		#bias parameter
+		bias[i] ~ dnorm(mu.bias,sigma.bias)
+	}
+
+	#bias
+	mu.bias <- delta.bias * sigma.bias
+	sigma.bias <- pow(sigma.bias.prec,-2)
+	sigma.bias.prec ~ dunif(0,10)
+	
+	#hyperpriors on alpha
+	mu.alpha <- delta.alpha * sigma.alpha
+	sigma.alpha <- pow(sigma.alpha.prec,-2)
+	sigma.alpha.prec ~ dunif(0,10)
+	
+	#effect size of alpha
+	delta.alpha ~ dnorm(0,1)
+	delta.bias ~ dnorm(0,1)
+	
+	#hyperpriors on theta.a
+	sigma.phi <- pow(sigma.phi.prec,-2)
+	sigma.phi.prec ~ dunif(0,10)
+}
+

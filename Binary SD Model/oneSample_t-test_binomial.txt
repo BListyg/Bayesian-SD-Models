@@ -1,0 +1,36 @@
+model
+{
+	for(i in 1:NSUBJ){ 
+		#counts of yes given yes responses
+		#are binomially distributed
+		#Eq. 2.7
+		YY[i] ~ dbin(theta1[i],Y_[i])
+		#counts of yes given no responses
+		#are binomially distributed
+		NY[i] ~ dbin(theta2[i],N_[i])
+		#transformation to rate scale
+		theta1[i] <- phi(phi1[i])
+		theta2[i] <- phi(phi2[i])
+		phi1[i] ~ dnorm(muphi,tauphi)
+		phi2[i] <- phi1[i]+alpha[i]
+		#alpha is the difference between 
+		#the rate of responding yes following yes
+		#and the rate of responding yes following no
+		#for each individual
+		alpha[i] ~ dnorm(mualpha,taualpha)
+		}
+		# Group-Level Priors:
+		muphi ~ dnorm(0,1)
+		#uninformative group level standard deviation
+		sigmaphi ~ dunif(0,10)
+		#transformation to precision
+		tauphi <- pow(sigmaphi,-2)
+		#the group level mean of alpha
+		mualpha <- delta * sigmaalpha
+		#uninformative prior 
+		sigmaalpha ~ dunif(0,10)
+		#transformation to precision
+		taualpha <- pow(sigmaalpha,-2)
+		#unit information prior on the effect size
+		delta ~ dnorm(0,1)
+	}
