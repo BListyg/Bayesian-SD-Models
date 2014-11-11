@@ -7,11 +7,13 @@ source('sim.data.markov.R')
 source('multiplot.R')
 source('HDIofMCMC.R')
 #----simuluated data set parameters----
-p.rep01 = .8
-p.rep11 = .8
+
+p.rep01 = .8 #probability of alternating response
+p.rep11 = .8 #probability of repeating response
 n.subj = 20
 n.sims = 50 * n.subj
-
+#transition matrix for the markov model used to 
+#generate simulated data
 trans.mat = matrix(c(1-p.rep01,p.rep01,
                      1-p.rep11,p.rep11),2,2,byrow=T)
 #----mcmc parameters----
